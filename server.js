@@ -43,18 +43,7 @@ if (args.help || args.h) {
     process.exit(0)
 }
 
-//debug const
-const debug = args.debug || false
 
-if (debug == true) {
-  app.get('/app/log/access', (req, res) => {
-      const stmt = db.prepare("SELECT * FROM accesslog").all();
-      res.status(200).json(stmt);
-  });
-  app.get('/app/error', (req, res) => {
-      throw new Error('Error Test Successful.');
-  });
-}
 
 //lg const
 const log = args.log || true
@@ -86,6 +75,19 @@ app.use((req, res, next) => {
   
     next();
   });
+
+  //debug const
+const debug = args.debug || false
+
+if (debug == true) {
+  app.get('/app/log/access', (req, res) => {
+      const stmt = db.prepare("SELECT * FROM accesslog").all();
+      res.status(200).json(stmt);
+  });
+  app.get('/app/error', (req, res) => {
+      throw new Error('Error Test Successful.');
+  });
+}
 
 
 
