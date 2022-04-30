@@ -1,5 +1,6 @@
-"use strict";
+//"use strict";
 const db = require("./database.js")
+const app = express()
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -9,10 +10,9 @@ const fs = require('fs')
 
 const http = require('http')
 const express = require('express')
-const app = express()
 
 const args = require('minimist')(process.argv.slice(2))
-console.log(args)
+//console.log(args)
 
 //port
 const port = args.port || process.env.PORT || 5000 
@@ -50,8 +50,8 @@ if (debug == true) {
       const stmt = db.prepare("SELECT * FROM accesslog").all();
       res.status(200).json(stmt);
   });
-  app.get("/app/error", (req, res) => {
-      throw new Error("Error Test Successful.");
+  app.get('/app/error', (req, res) => {
+      throw new Error('Error Test Successful.');
   });
 }
 
@@ -63,7 +63,32 @@ if (log == true) {
   app.use(morgan('combined', { stream: accessLog }))
 }
 
+// logging
 
+app.use((req, res, next) => {
+
+    let logdata = {
+        remoteaddr: req.ip,
+        remoteuser: req.user,
+        time: Date.now(),
+        method: req.method,
+        url: req.url,
+        protocol: req.protocol,
+        httpversion: req.httpVersion,
+        status: res.statusCode,
+        referer: req.headers["referer"],
+        useragent: req.headers["user-agent"],
+    };
+  
+    const stmt = db.prepare('INSERT INTO accesslog (remoteaddr, remoteuser, time, method, url, protocol, httpversion, status, referer, useragent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+    const info = stmt.run(logdata.remoteaddr, logdata.remoteuser, logdata.time, logdata.method, logdata.url, logdata.protocol, logdata.httpversion, logdata.status, logdata.referer, logdata.useragent)
+  
+    next();
+  });
+
+
+
+//code from a03
 const {coinFlip, coinFlips, countFlips, flipACoin} = require("./modules/coin.js");
 
 
