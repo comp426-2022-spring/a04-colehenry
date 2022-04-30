@@ -1,3 +1,4 @@
+"use strict";
 const Database = require('better-sqlite3');
 const db = new Database('log.db');
 
@@ -13,7 +14,7 @@ if (row === undefined) {
     console.log('Log db currently empty. Creating log db...')
 
     const sqlInit = `
-        CREATE TABLE accesslog ( id INTEGER NOT NULL PRIMARY KEY, 
+        CREATE TABLE IF NOT EXISTS accesslog ( id INTEGER NOT NULL PRIMARY KEY, 
             remoteaddr TEXT, remoteuser TEXT, time INTEGER, 
             method TEXT, url TEXT, protocol TEXT, 
             httpversion TEXT, status INTEGER, 
