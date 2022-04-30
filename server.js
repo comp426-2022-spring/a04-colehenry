@@ -61,7 +61,7 @@ const log = args.log || true
 
 if (log == true) {
   const accessLog = fs.createWriteStream('access.log', { flags: 'a' })
-  app.use(morgan('combined', { stream: accessLog }))
+  app.use(morgan('accesslog', { stream: accessLog }))
 }
 
 // logging
