@@ -1,4 +1,13 @@
-//import { coinFlips, countFlips, coinFlip, flipACoin } from "./modules/coin.mjs";
+"use strict";
+const Database = require('better-sqlite3');
+const db = new Database('user.db');
+
+const stmt = db.prepare(`
+    SELECT name FROM sqlite_master WHERE type='table' and name='userinfo';`
+    );
+
+    let row = stmt.get();
+
 
 const http = require('http')
 const express = require('express')
@@ -23,6 +32,11 @@ server.js [options]
 
 --help	Return this message and exit.
 `)
+
+if (args.help || args.h) {
+    console.log(help)
+    process.exit(0)
+}
 
 args['port']
 const port = args.port || process.env.PORT || 5000 
