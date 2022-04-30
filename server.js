@@ -1,9 +1,11 @@
 "use strict";
-const Database = require('better-sqlite3');
-const db = new Database('user.db');
+const db = require("./database.js")
 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-
+const morgan = require('morgan')
+const fs = require('fs')
 
 const http = require('http')
 const express = require('express')
@@ -12,6 +14,12 @@ const app = express()
 const args = require('minimist')(process.argv.slice(2))
 console.log(args)
 
+//port
+const port = args.port || process.env.PORT || 5000 
+
+args['port', 'help', 'debug', 'log']
+
+//help
 const help = (`
 server.js [options]
 
@@ -34,8 +42,14 @@ if (args.help || args.h) {
     process.exit(0)
 }
 
-args['port']
-const port = args.port || process.env.PORT || 5000 
+const debug = args.debug || false
+
+if (debug == true) {
+    const accessLog = fs.createWriteStream('access.log', {flags: 'a'})
+    app.use(morgan('combined', { stream: accessLog }))
+
+}
+
 
 const {coinFlip, coinFlips, countFlips, flipACoin} = require("./modules/coin.js");
 
