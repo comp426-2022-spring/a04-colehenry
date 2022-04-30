@@ -42,12 +42,25 @@ if (args.help || args.h) {
     process.exit(0)
 }
 
+//debug const
 const debug = args.debug || false
 
 if (debug == true) {
-    const accessLog = fs.createWriteStream('access.log', {flags: 'a'})
-    app.use(morgan('combined', { stream: accessLog }))
+  app.get('/app/log/access', (req, res) => {
+      const stmt = db.prepare("SELECT * FROM accesslog").all();
+      res.status(200).json(stmt);
+  });
+  app.get("/app/error", (req, res) => {
+      throw new Error("Error Test Successful.");
+  });
+}
 
+//lg const
+const log = args.log || true
+
+if (log == true) {
+  const accessLog = fs.createWriteStream('access.log', { flags: 'a' })
+  app.use(morgan('combined', { stream: accessLog }))
 }
 
 
