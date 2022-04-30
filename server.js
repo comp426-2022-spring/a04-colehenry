@@ -2,11 +2,7 @@
 const Database = require('better-sqlite3');
 const db = new Database('user.db');
 
-const stmt = db.prepare(`
-    SELECT name FROM sqlite_master WHERE type='table' and name='userinfo';`
-    );
 
-    let row = stmt.get();
 
 
 const http = require('http')
